@@ -1,19 +1,18 @@
-//exemple des slides (à effacer)
-
-
 version: '3.8'
+
 services:
-loadbalancer:
-image: traefik:v2.5
-ports:
-- "80:80"
-webserver:
-image: heigvd/mywebserver
-environment:
-DBSERVER: database
-deploy:
-replicas: 5
-database:
-image: mysql:8.0
-environment:
-MYSQL_ROOT_PASSWORD: example_password
+  site-a:
+    image: mynginx
+    build: ../StaticWebServer
+    ports: 
+    - "8080:80"
+    volumes:
+    - ./site-a:/usr/share/nginx/html
+  site-b:
+    image: mynginx
+    ports: 
+    - "8081:80"
+    volumes:
+    - ./site-a:/usr/share/nginx/html
+
+

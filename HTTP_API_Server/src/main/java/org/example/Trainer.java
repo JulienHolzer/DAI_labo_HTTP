@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Trainer {
@@ -14,7 +15,8 @@ public class Trainer {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonProperty("naissance")
     private Date naissance;
-    @JsonBackReference
+    @JsonManagedReference
+    @JsonProperty("equipe")
     private Equipe equipe;
 
     public Trainer() { }

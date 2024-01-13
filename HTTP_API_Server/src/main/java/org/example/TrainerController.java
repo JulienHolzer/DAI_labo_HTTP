@@ -14,13 +14,11 @@ public class TrainerController {
 
     public TrainerController() {
         trainers.put(++lastId, new Trainer("Demont", "Kilian", new Date(102, Calendar.FEBRUARY, 11),
-                new Equipe("My Favorites Pokemon",
                         List.of(new Pokemon(150, "Mewtwo", 122.0, 2.0, Type.PSYCHIC),
-                                new Pokemon(131, "Lokhlass", 220.0, 2.5, Type.WATER, Type.ICE)))));
+                                new Pokemon(131, "Lokhlass", 220.0, 2.5, Type.WATER, Type.ICE))));
         trainers.put(++lastId, new Trainer("Holzer", "Julien", new Date(101, Calendar.MARCH, 11),
-                new Equipe("Bests Pokemon !!!!",
                         List.of(new Pokemon(150, "Mewtwo", 122.0, 2.0, Type.PSYCHIC),
-                                new Pokemon(131, "Lokhlass", 220.0, 2.5, Type.WATER, Type.ICE)))));
+                                new Pokemon(131, "Lokhlass", 220.0, 2.5, Type.WATER, Type.ICE))));
 
     }
 
@@ -34,8 +32,8 @@ public class TrainerController {
     }
 
     public void create(Context ctx) {
-        Trainer user = ctx.bodyAsClass(Trainer.class);
-        trainers.put(++lastId, user);
+        Trainer trainer = ctx.bodyAsClass(Trainer.class);
+        trainers.put(++lastId, trainer);
         ctx.status(201);
     }
 
@@ -47,8 +45,8 @@ public class TrainerController {
 
     public void update(Context ctx) {
         int id = Integer.parseInt(ctx.pathParam("id"));
-        Trainer user = ctx.bodyAsClass(Trainer.class);
-        trainers.put(id, user);
+        Trainer trainer = ctx.bodyAsClass(Trainer.class);
+        trainers.put(id, trainer);
         ctx.status(200);
     }
 }

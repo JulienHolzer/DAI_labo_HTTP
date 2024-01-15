@@ -1,4 +1,4 @@
-package org.example;
+package app;
 
 public enum Type {
     NORMAL, FIRE, WATER, ELECTRIC, GRASS, ICE, FIGHTING, POISON, GROUND, FLYING,

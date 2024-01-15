@@ -1,5 +1,5 @@
 FROM eclipse-temurin:latest
-COPY ./target/app.jar /app.jar
+COPY target/HTTP_API_Server-1.0-SNAPSHOT-jar-with-dependencies.jar /app/app.jar
 
-EXPOSE 7070
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+EXPOSE 7002
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

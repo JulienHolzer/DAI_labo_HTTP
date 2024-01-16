@@ -17,22 +17,24 @@ services:
     image: mynginx
     build: ../StaticWebServer
     expose:
-      - "8081"
+      - "80"
     volumes:
       - ./../DockerCompose/site-a:/usr/share/nginx/html
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.static_a.rule=Host(`localhost`) && PathPrefix(`/site-a`)"
+      - "traefik.http.routers.static_server_a.rule=Host(`site-a.localhost`)"
 
   static_server_b:
     image: mynginx
     expose:
-      - "8082"
+      - "80"
     volumes:
       - ./../DockerCompose/site-b:/usr/share/nginx/html
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.static_b.rule=Host(`localhost`) && PathPrefix(`/site-b`)"
+      - "traefik.http.routers.static_server_b.rule=Host(`site-b.localhost`)"
+
+
 
   api_server:
     build: ./../HTTP_API_Server
@@ -40,4 +42,4 @@ services:
       - "7002"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.api_server.rule=Host(`localhost`) && PathPrefix(`/api`)"

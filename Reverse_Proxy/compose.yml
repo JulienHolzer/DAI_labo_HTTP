@@ -61,3 +61,12 @@ services:
       - "traefik.http.routers.api_server.tls=true"
     deploy:
       replicas: 3
+
+  portainer:
+    image: portainer
+    ports:
+      - "9443:9443"
+      - "9000:9000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: unless-stopped

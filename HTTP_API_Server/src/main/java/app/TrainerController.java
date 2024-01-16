@@ -28,6 +28,7 @@ public class TrainerController {
     }
 
     public void getAll(Context ctx) {
+        System.out.println("Hello");
         ctx.json(trainers);
     }
 

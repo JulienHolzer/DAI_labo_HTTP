@@ -47,5 +47,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.api_server.rule=Host(`localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.services.api_server.loadbalancer.sticky=true"
+      - "traefik.http.services.api_server.loadbalancer.sticky.cookie.name=StickyCookie"
+      - "traefik.http.services.api_server.loadbalancer.sticky.cookie.secure=true"
     deploy:
       replicas: 3

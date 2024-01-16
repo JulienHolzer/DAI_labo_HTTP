@@ -23,6 +23,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.static_server_a.rule=Host(`site-a.localhost`)"
+    deploy:
+      replicas: 3
 
   static_server_b:
     image: mynginx
@@ -33,6 +35,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.static_server_b.rule=Host(`site-b.localhost`)"
+    deploy:
+      replicas: 3
 
 
 
@@ -43,3 +47,5 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.api_server.rule=Host(`localhost`) && PathPrefix(`/api`)"
+    deploy:
+      replicas: 3

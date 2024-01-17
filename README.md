@@ -2,10 +2,43 @@
 Develop a complete infrastructure with static and dynamic Web servers, running on docker-compose
 
 ## Step 1: Static Web site
+L’objectif de cette étape est de construire une image docker qui contient un serveur statique HTTP Nginx.
+Pour cela il faut d’abord créer un dockerfile (document s’appelant « dockerfile » en minuscule et n’ayant pas d’extension) basé sur nginx et qui copie le contenu. Voici le contenu de notre dockerfile :
+```text
+FROM nginx
+
+COPY ./finexo-html /usr/share/nginx/html
+```
+finexo-html étant le template, qui se trouve dans le même dossier que le dockerfile
+
+Téléchargement du template : https://www.free-css.com/free-css-templates/page296/finexo
+
+Voici la commande pour build l’image (depuis le dossier staticWebServer où se trouve le dockerfile en question)
+```text
+docker build -t mynginx .
+```
+Voici la commande pour run l’image :
+```text
+docker run -p 8080:80 mynginx
+```
+Pour voir le site en local, il suffit de taper sur le navigateur « localhost:8080 » et le site devrait apparaître correctement.
 
 
 ## Step 2: Docker compose
 
+Dans cette étape, il faut utiliser Docker compose pour déployer notre infrastructure avec comme service le serveur web statique. De plus il faut pouvoir être capable de reconstruire l’image du serveur web.
+
+Nous avons commencé par créer un dossier avec le nom de service (site-a) et nous y avons ajouter le contenu du site (les fichiers dans notre dossier template). Nous avons fait la même chose pour un deuxième service site-b. Nous avons ensuite fait un fichier docker-compose (compose.yml) que nous avons remplis comme dans l’exemple fourni dans les slides (chapitre 7 web infrastructure slide 24) en ajoutant ces deux services aux ports « 8080:80 » pour le site-a et « 8081:80 » pour le site-b, mais avec comme nom d’image “mynginx”.
+
+Pour tester cette étape il faut construire les images définis dans le fichier docker-compose avec la commande suivante :
+```text
+docker-compose build
+```
+Puis démarrer les services définis dans le fichier docker-compose avec la commande :
+```text
+docker-compose up
+```
+L’objectif est atteint si les deux sites apparaissent correctement en tapant dans le navigateur « localhost:8080 » et « localhost:8081 ».
 
 ## Étape 3 : serveur HTTP api 
 Nous avons développé une api CRUD permettant gérer un dresseur de Pokémon.
@@ -272,10 +305,62 @@ Il est désormais possible :
 - d'accéder d'envoyer de requête à notre api à l'adresse http://localhost/api
 
 ## Step 5: Scalability and load balancing
+Dans cette étape nous allons pouvoir démarrer plusieurs instances des serveurs (scalabilité) et gérer ça dynamiquement.
+
+Pour cela il faut modifier le fichier docker-compose et rajouter quelques lignes dans les services dont on veut en augmenter le nombre d’instance :
+```text
+deploy:
+    replicas: 3
+```
+Pour pouvoir changer dynamiquement le nombre d’instance, il suffit d’utiliser la commande suivante (avec le nom du service adéquat) :
+```text
+docker-compose up --scale static_server_a=5
+```
+Pour s’assurer que les différents services se lancent correctement, il suffit de construire les images et lancer les services puis nous pouvons constater dans l’application Docker Desktop le nombre de service en cours d’exécution (par exemple « Running(8/8) »). Nous pouvons également constater dans le terminal les différents services se lancer (qui ont une couleur distincte et un id différent par instance).
+De même pour tester le changement de nombre d’instance dynamiquement, nous pouvons constater qu’après avoir passé la commande ci-dessus, le nombre se modifie en fonction des services en cours d’exécution.
+
+
+![commandeScale.PNG](/images/commandeScale.PNG)
+
+
 
 ## Step 6: Load balancing with round-robin and sticky sessions
+Dans cette étape nous avons introduit la notion de sticky sessions pour instance du service API. Pour cela il a fallu de nouveau modifier le fichier docker-compose et rajouter les lignes suivantes dans la partie « labels » du service « api_server » :
+
+      - "traefik.http.services.api_server.loadbalancer.sticky=true"
+      - "traefik.http.services.api_server.loadbalancer.sticky.cookie.name=StickyCookie"
+      - "traefik.http.services.api_server.loadbalancer.sticky.cookie.secure=true"
+Pour les serveurs statiques, nous avons gardé un fonctionnement en round-robin qui est déjà utilisé par défaut par traefik (donc pas de changement nécessaire).
+
+Pour tester le fonctionnement de ces méthodes, il suffit de tester dans le navigateur le site et l’api puis de rafraichir la page. Nous pouvons constater que pour le cas du site, c’est à chaque fois une autre instance du service qui est utilisé (dans un ordre régulier car c’est le principe du round-robin qui est une répartition équitable) tandis que pour le cas de l’api, c’est toujours la même instance.
 
 ## Step 7: Securing Traefik with HTTPS**
+Dans cette étape, nous allons gérer la sécurité avec HTTPS.
+
+Nous avons commencé par créer un certificat de chiffrement et une clé que nous avons mis dans un dossier « Certificate ». Pour cela il suffit de taper dans le terminal une commande puis de répondre à certaine question.
+
+Voici la commande en question :
+```text
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 365
+```
+Nous avons ensuite ajouté dans le fichier docker compose l’emplacement de ce dossier contenant le certificat et la clé en indiquant le chemin du dossier dans la partie « volumes » de notre reverse-proxy (c’est-à-dire du service « traefik »).
+
+Toutefois il n’est pas possible de spécifier l’emplacement du certificat avec des labels et c’est pour cette raison que avons dû créer un fichier de configuration traefik.yaml en suivant la documentation de traefik.
+
+Providers : https://doc.traefik.io/traefik/providers/docker/#configuration-examples
+
+Entrypoints : https://doc.traefik.io/traefik/routing/entrypoints/#configuration-examples
+
+Tls : https://doc.traefik.io/traefik/https/tls/#user-defined
+
+Finalement il faut encore modifier le docker-file pour activer le point d’entrée https et pour mettre tls a true en y ajoutant dans « labels » les lignes suivantes :
+```text
+- "traefik.http.routers.api_server.entrypoints=https"
+- "traefik.http.routers.api_server.tls=true"
+```
+Pour tester le fonctionnement de cette étape, il suffit de tester de nouveau dans le navigateur. Toutefois il y a aura un message d’erreur de sécurité (« Votre connexion n’est pas privé ») mais il suffit de le contourner en appuyant sur « paramètres avancés » puis « continuer vers le site (dangereux) »
+![messageWarning.PNG](/images/messageWarning.PNG)
+
 
 ## Étape facultative 1 : Interface utilisateur de gestion
 

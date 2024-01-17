@@ -13,7 +13,8 @@ Nous avons développé une api CRUD permettant gérer un dresseur de Pokémon.
 Elle a été développée en Java et utilise le framework Javalin pour l'envoi des requêtes HTML.
 
 ### UML
-![UML_DAI.png](images%2FUML_DAI.png)
+
+![UML_DAI.png](\images\UML_DAI.png)
 
 ### Description de l'API
 
@@ -275,3 +276,31 @@ Il est désormais possible :
 ## Step 6: Load balancing with round-robin and sticky sessions
 
 ## Step 7: Securing Traefik with HTTPS**
+
+## Étape facultative 1 : Interface utilisateur de gestion
+
+```yaml  
+  portainer:
+    image: portainer/portainer-ce
+    ports:
+      - "9443:9443"
+      - "9000:9000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: unless-stopped
+```
+Nous avons ajouté un service portainer avec une image portainer-ce à notre configuration Docker Compose. 
+Portainer est une interface utilisateur de gestion Docker qui permet de visualiser et de gérer les conteneurs, 
+les images, les réseaux et d'autres ressources Docker de manière graphique. Voici une explication des éléments ajoutés :
+- le port 9443 est mappé pour la connexion HTTPS 
+- le port 9000 est mappé pour la connexion HTTP
+- le socket Docker (/var/run/docker.sock) est monté à l'intérieur du conteneur Portainer. Cela permet à Portainer d'interagir directement avec le démon Docker de l'hôte, facilitant ainsi la gestion des conteneurs
+- le redémarrage du service "portainer" est configuré pour qu'il soit automatique sauf s'il est explicitement arrêté (unless-stopped). Cela garantit que le service Portainer sera relancé automatiquement en cas de défaillance ou de redémarrage du système hôte.
+
+### Utilisation de Portainer 
+En allant à l'adresse http://localhost:9000 ou https://localhost:9000 et une fois connecté, il est possible par exemple de dresser la liste des conteneurs en cours d'exécution et de les démarrer/arrêter.
+Exemple de comment démarrer/arrêter les conteneurs sur Portainer.
+![img1_portainer.PNG](images\img1_portainer.PNG)
+![img3_portainer.PNG](images\img2_portainer.PNG)
+![img2_portainer.PNG](images\img3_portainer.PNG)
+![img4_portainer.PNG](images\img4_portainer.PNG)

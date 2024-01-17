@@ -151,6 +151,8 @@ modifie le dresseur d'id 1 en ondine et ses carctéristiques
 résultat :
 supprime le dresseur d'id 1 et ses carctéristiques
 
+### Dockeristation de l'api
+
 
 ## Step 4: Reverse proxy with Traefik
 

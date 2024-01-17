@@ -63,7 +63,7 @@ services:
       replicas: 3
 
   portainer:
-    image: portainer
+    image: portainer/portainer-ce
     ports:
       - "9443:9443"
       - "9000:9000"

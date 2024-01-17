@@ -10,6 +10,13 @@ Develop a complete infrastructure with static and dynamic Web servers, running o
 ## Étape 3 : serveur HTTP api 
 Nous avons développé une api CRUD permettant gérer un dresseur de Pokémon.
 
+Elle a été développée en Java et utilise le framework Javalin pour l'envoi des requêtes HTML.
+
+### UML
+![UML_DAI.png](images%2FUML_DAI.png)
+
+### Description de l'API
+
 | Méthode | URL              | Descirpition                                                                                                |
 |---------|------------------|-------------------------------------------------------------------------------------------------------------|
 | GET     | /api/trainers| Donne la liste de tous les dresseurs.                                                                       |
@@ -21,6 +28,7 @@ Nous avons développé une api CRUD permettant gérer un dresseur de Pokémon.
 Les informations sont transmises au format JSON.
 
 ### Exemples
+Les tests pour les exemples ont été mené avec Bruno.
 
 #### GET /api/trainers
 résultat :
@@ -199,9 +207,68 @@ docker compose up
 ```
 Ceci permet de construire l'image Docker de notre api, mais aussi de nos sites et de la démarrer.
 
+## Step 4: Reverse proxy avec Traefik
 
 
-## Step 4: Reverse proxy with Traefik
+```yaml
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  static_server_a:
+    image: mynginx
+    build: ../StaticWebServer
+    expose:
+      - "80"
+    volumes:
+      - ./../DockerCompose/site-a:/usr/share/nginx/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.static_server_a.rule=Host(`site-a.localhost`)"
+
+  static_server_b:
+    image: mynginx
+    expose:
+      - "80"
+    volumes:
+      - ./../DockerCompose/site-b:/usr/share/nginx/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.static_server_b.rule=Host(`site-b.localhost`)"
+
+
+
+  api_server:
+    build: ./../HTTP_API_Server
+    expose:
+      - "7002"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api_server.rule=Host(`localhost`) && PathPrefix(`/api`)"
+```
+
+Nous avons ajouté un reverse proxy à la configuration Docker Compose précédente et nous l'avons adaptée. 
+
+L'ajout du reverse proxy avec l'image traefik a nécessité quelques adaptations pour le reste. 
+- Nos serveurs statiques (static_server_a et static_server_b) ainsi que dynamique (api_server) ont vu leur champ "ports" modifié en "expose" pour indiquer les ports qui seront accessibles depuis d'autres services dans le réseau Docker interne.
+- Des champs labels ont également été ajouté afin d'activer Traefik pour chaque service et définir des règles de routage spécifiques.
+
+Il est désormais possible :
+- d'accéder au site a à l'adresse http://site-a.localhost/
+- d'accéder au site b à l'adresse http://site-b.localhost/
+- d'accéder au Dashboard traefik à l'adresse http://localhost:8080/Dashboard
+- d'accéder d'envoyer de requête à notre api à l'adresse http://localhost/api
 
 ## Step 5: Scalability and load balancing
 

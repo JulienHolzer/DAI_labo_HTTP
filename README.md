@@ -152,6 +152,30 @@ résultat :
 supprime le dresseur d'id 1 et ses carctéristiques
 
 ### Dockeristation de l'api
+L'api a été dockerisée et peut être lancée avec Docker. Pour ça, il faut : 
+
+- lancer la commande suivante depuis \HTTP_API_Server : 
+```text
+mvn clean package
+```
+Ceci va créer le fichier exécutable .jar de notre API avec toutes les dépendances requises.
+
+- lancer les commandes suivantes depuis \HTTP_API_Server :
+```text
+docker build -t myapi .
+
+docker run -p 7002:7002 myapi
+```
+Ceci permet de construire l'image Docker et de la lancer.
+
+- ou avec Docker Compose à l'aide des commandes suivantes depuis /DockerCompose :
+```text
+docker compose build
+
+docker compose up
+```
+Ceci permet de construire l'image Docker de notre api, mais aussi de nos sites et de la lancer.
+
 
 
 ## Step 4: Reverse proxy with Traefik

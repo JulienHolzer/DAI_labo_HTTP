@@ -152,21 +152,44 @@ résultat :
 supprime le dresseur d'id 1 et ses carctéristiques
 
 ### Dockeristation de l'api
-L'api a été dockerisée et peut être lancée avec Docker. Pour ça, il faut : 
+L'api a été dockerisée et ajoutée à la configuration docker compose de l'étape précédente. 
 
-- lancer la commande suivante depuis \HTTP_API_Server : 
+```dockerfile
+FROM eclipse-temurin:latest
+COPY target/HTTP_API_Server-1.0-SNAPSHOT-jar-with-dependencies.jar /app/app.jar
+
+EXPOSE 7002
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+```
+Dans notre Dockerfile :
+- nous définissons l'image de base eclipse-temurin
+- nous copions le fichier JAR exécutable de l'application dans le répertoire /app de l'image
+- nous exposons le port 7002 sur le conteneur Docker, indiquant que l'application à l'intérieur du conteneur écoute sur ce port
+- nous définissons que la commande "java -jar /app/app.jar" soit exécutée lorsque le conteneur est démarré.
+
+```text
+ api:
+  build: ./../HTTP_API_Server
+  ports:
+  - "7002:7002"
+```
+Nous avons ajouté le service "api" ci-dessus à la configuration Docker Compose.
+
+Pour lancer l'api avec Docker, il faut : 
+
+- exécuter la commande suivante depuis \HTTP_API_Server : 
 ```text
 mvn clean package
 ```
 Ceci va créer le fichier exécutable .jar de notre API avec toutes les dépendances requises.
 
-- lancer les commandes suivantes depuis \HTTP_API_Server :
+- exécuter les commandes suivantes depuis \HTTP_API_Server :
 ```text
 docker build -t myapi .
 
 docker run -p 7002:7002 myapi
 ```
-Ceci permet de construire l'image Docker et de la lancer.
+Ceci permet de construire l'image Docker et de la démarrer.
 
 - ou avec Docker Compose à l'aide des commandes suivantes depuis /DockerCompose :
 ```text
@@ -174,7 +197,7 @@ docker compose build
 
 docker compose up
 ```
-Ceci permet de construire l'image Docker de notre api, mais aussi de nos sites et de la lancer.
+Ceci permet de construire l'image Docker de notre api, mais aussi de nos sites et de la démarrer.
 
 
 

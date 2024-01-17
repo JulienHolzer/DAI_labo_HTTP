@@ -28,7 +28,7 @@ résultat :
 {
   "1": {
     "name": "Demont",
-    "prenom": "Kilian",
+    "firstname": "Kilian",
     "birthdate": "2002-02-10",
     "team": [
       {
@@ -51,7 +51,7 @@ résultat :
   },
   "2": {
     "name": "Holzer",
-    "prenom": "Julien",
+    "firstname": "Julien",
     "birthdate": "2001-03-10",
     "team": [
       {
@@ -80,7 +80,7 @@ résultat :
 ```json
 {
   "name": "Demont",
-  "prenom": "Kilian",
+  "firstname": "Kilian",
   "birthdate": "2002-02-10",
   "team": [
     {
@@ -103,12 +103,53 @@ résultat :
 }
 ```
 
-#### POST /api/trainers/
+#### POST /api/trainers
 corps de la requête: 
-
+```json
+{
+  "name": "Ketchum",
+  "firstname": "Sacha",
+  "birthdate": "1996-02-27",
+  "team": [
+    {
+      "pokedexnumber": 25,
+      "name": "Pikachu",
+      "weight": 6.0,
+      "size": 0.6,
+      "type1": "ELECTRIC",
+      "type2": null
+    }
+  ]
+}
+```
 
 résultat :
 Le dresseur est ajouté à la liste.
+
+#### PUT /api/trainers/1
+corps de la requête:
+```json
+{
+  "name": "Azuria",
+  "firstname": "Ondine",
+  "birthdate": "1998-12-01",
+  "team": [
+    {
+      "pokedexnumber": 120,
+      "name": "Stari",
+      "weight": 34.5,
+      "size": 0.8,
+      "type1": "WATER"
+    }
+  ]
+}
+```
+résultat : 
+modifie le dresseur d'id 1 en ondine et ses carctéristiques
+
+#### DELETE /api/trainers/1
+résultat :
+supprime le dresseur d'id 1 et ses carctéristiques
 
 
 ## Step 4: Reverse proxy with Traefik

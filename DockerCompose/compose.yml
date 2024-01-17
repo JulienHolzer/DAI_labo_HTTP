@@ -14,5 +14,9 @@ services:
     - "8081:80"
     volumes:
     - ./site-a:/usr/share/nginx/html
+  api:
+    build: ./../HTTP_API_Server
+    ports:
+      - "7002:7002"
 
 

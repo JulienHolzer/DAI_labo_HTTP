@@ -1,0 +1,30 @@
+meta {
+  name: createTrainer
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:7002/api/trainers
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Ketchum",
+    "firstname": "Sacha",
+    "birthdate": "1996-02-27",
+    "team": [
+      {
+        "pokedexnumber": 25,
+        "name": "Pikachu",
+        "weight": 6.0,
+        "size": 0.6,
+        "type1": "ELECTRIC",
+        "type2": null
+      }
+    ]
+  }
+  
+}

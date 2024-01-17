@@ -1,0 +1,29 @@
+meta {
+  name: modifyTrainer
+  type: http
+  seq: 5
+}
+
+put {
+  url: http://localhost:7002/api/trainers/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Azuria",
+    "firstname": "Ondine",
+    "birthdate": "1998-12-01",
+    "team": [
+      {
+        "pokedexnumber": 120,
+        "name": "Stari",
+        "weight": 34.5,
+        "size": 0.8,
+        "type1": "WATER"
+      }
+    ]
+  }
+  
+}

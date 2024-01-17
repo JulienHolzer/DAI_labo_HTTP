@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Trainer {
     @JsonProperty("name")
     private String name;
-    @JsonProperty("prenom")
+    @JsonProperty("firstname")
     private String firstname;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonProperty("birthdate")

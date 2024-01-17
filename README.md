@@ -14,7 +14,7 @@ Elle a été développée en Java et utilise le framework Javalin pour l'envoi d
 
 ### UML
 
-![UML_DAI.png](\images\UML_DAI.png)
+![UML_DAI.png](/images/UML_DAI.png)
 
 ### Description de l'API
 
@@ -300,7 +300,7 @@ les images, les réseaux et d'autres ressources Docker de manière graphique. Vo
 ### Utilisation de Portainer 
 En allant à l'adresse http://localhost:9000 ou https://localhost:9000 et une fois connecté, il est possible par exemple de dresser la liste des conteneurs en cours d'exécution et de les démarrer/arrêter.
 Exemple de comment démarrer/arrêter les conteneurs sur Portainer.
-![img1_portainer.PNG](images\img1_portainer.PNG)
-![img3_portainer.PNG](images\img2_portainer.PNG)
-![img2_portainer.PNG](images\img3_portainer.PNG)
-![img4_portainer.PNG](images\img4_portainer.PNG)
+![img1_portainer.PNG](/images/img1_portainer.PNG)
+![img3_portainer.PNG](/images/img2_portainer.PNG)
+![img2_portainer.PNG](/images/img3_portainer.PNG)
+![img4_portainer.PNG](/images/img4_portainer.PNG)

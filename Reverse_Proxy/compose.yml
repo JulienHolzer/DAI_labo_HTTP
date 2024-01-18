@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./../Certificate:/etc/traefik/certificates
+      - ./traefik.yaml:/etc/traefik/traefik.yaml
+
+  static_server_a:
+    image: mynginx
+    build: ../StaticWebServer
+    expose:
+      - "80"
+    volumes:
+      - ./../DockerCompose/site-a:/usr/share/nginx/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.static_server_a.rule=Host(`site-a.localhost`)"
+      - "traefik.http.routers.static_server_a.entrypoints=https"
+      - "traefik.http.routers.static_server_a.tls=true"
+    deploy:
+      replicas: 3
+
+  static_server_b:
+    image: mynginx
+    expose:
+      - "80"
+    volumes:
+      - ./../DockerCompose/site-b:/usr/share/nginx/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.static_server_b.rule=Host(`site-b.localhost`)"
+      - "traefik.http.routers.static_server_b.entrypoints=https"
+      - "traefik.http.routers.static_server_b.tls=true"
+    deploy:
+      replicas: 3
+
+
+
+  api_server:
+    build: ./../HTTP_API_Server
+    expose:
+      - "7002"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api_server.rule=Host(`localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.services.api_server.loadbalancer.sticky=true"
+      - "traefik.http.services.api_server.loadbalancer.sticky.cookie.name=StickyCookie"
+      - "traefik.http.services.api_server.loadbalancer.sticky.cookie.secure=true"
+      - "traefik.http.routers.api_server.entrypoints=https"
+      - "traefik.http.routers.api_server.tls=true"
+    deploy:
+      replicas: 3
+
+  portainer:
+    image: portainer/portainer-ce
+    ports:
+      - "9443:9443"
+      - "9000:9000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: unless-stopped

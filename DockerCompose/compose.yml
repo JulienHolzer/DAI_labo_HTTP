@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  site-a:
+    image: mynginx
+    build: ../StaticWebServer
+    ports: 
+    - "8080:80"
+    volumes:
+    - ./site-a:/usr/share/nginx/html
+  site-b:
+    image: mynginx
+    ports: 
+    - "8081:80"
+    volumes:
+    - ./site-a:/usr/share/nginx/html
+
+

@@ -1,6 +1,4 @@
-**# DAI_labo_HTTP
-Develop a complete infrastructure with static and dynamic Web servers, running on docker-compose
-
+# DAI_labo_HTTP
 ## Step 1: Static Web site
 L’objectif de cette étape est de construire une image docker qui contient un serveur statique HTTP Nginx.
 Pour cela il faut d’abord créer un dockerfile (document s’appelant « dockerfile » en minuscule et n’ayant pas d’extension) basé sur nginx et qui copie le contenu. Voici le contenu de notre dockerfile :
@@ -41,7 +39,7 @@ docker-compose up
 L’objectif est atteint si les deux sites apparaissent correctement en tapant dans le navigateur « localhost:8080 » et « localhost:8081 ».
 
 ## Étape 3 : serveur HTTP api 
-Nous avons développé une api CRUD permettant gérer un dresseur de Pokémon.
+Nous avons développé une api CRUD permettant de gérer un dresseur de Pokémon.
 
 Elle a été développée en Java et utilise le framework Javalin pour l'envoi des requêtes HTML.
 
